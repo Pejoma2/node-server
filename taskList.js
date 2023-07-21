@@ -1,3 +1,5 @@
+//const add = require("./addTask");
+
 
 const readline = require("readline");
 
@@ -19,12 +21,18 @@ function showMenu(){
     console.log("2. Remove task");
     console.log("3. Completed task");
     console.log("4. Show task list");
-    console.log("5. Exit");
+    console.log("5. Remove ALL Task");
+    console.log("6. Exit");
 
-    communicator.question("Choose from the menu: ", (option) =>{
+    communicator.question("Choose from the menu: ", async (option) =>{
         switch(option){
             case "1":
-                addTask();
+                try{
+                  await addTask();
+                } catch(error){
+                    console.error(error);
+                }
+                showMenu();
                 break;
             
             case "2":
@@ -38,8 +46,12 @@ function showMenu(){
             case "4":
                 showTaskList();
                 break;
-            
+
             case "5":
+                RemoveALLTask();
+                break;
+            
+            case "6":
                 communicator.close();
                 break;
 
@@ -57,27 +69,50 @@ let taskId = 1;
 let tasks = [];
 
 
+//-0- function AskQuestion
+
+function AskQuestion(question){
+    return new Promise((resolve) => {
+        communicator.question(question, (response) => {
+            resolve(response);
+        });
+    });
+}
 
 //-1- Add task function
 
-function addTask() {
-    communicator.question("Add a task name: ", (name) =>{
-        communicator.question("Add a task description: ", (description) =>{
-            let task = {
-                id: taskId,
-                name: name,
-                description: description,
-                completed: false,
-            };
+async function addTask() {
+    const name = await AskQuestion("Add a task name: ");
+    const description = await AskQuestion("Add a task description: ");
+    const dueDate = await AskQuestion("Add a task due date (YYYY-MM-DD): ");
+            
 
-            tasks.push(task);
-            console.log("task added");
-            taskId ++;
-            showMenu();
-        });
-    });
+            return new Promise((res, rej) => {
+                setTimeout(() => {
+                    if (!tasks.find((t) => t.name == name)) {
+                        let task = {
+                            id: taskId,
+                            name: name,
+                            dueDate: dueDate,
+                            description: description,
+                            completed: false,
+                        };
+            
+                        tasks.push(task);
+                        taskId ++;
+                        console.log("task added");
+                        
+                        res();
 
-}
+                    }else{
+                        rej("Error, Task addition failed (name already exist)")
+                    }
+                 }, 2000)
+                })   
+    };
+    
+
+
 
 
 //-2- Remove task function
@@ -123,5 +158,13 @@ function completeTask() {
 
 function showTaskList(){
     console.log(tasks);
+    showMenu();
+}
+
+
+//-5- ShowTaskList function Remove ALL Task
+
+function RemoveALLTask(){
+    tasks = [];
     showMenu();
 }
