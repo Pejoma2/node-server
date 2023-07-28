@@ -121,7 +121,7 @@ function removeTask() {
     communicator.question("Enter the ID of the task you want to REMOVE: ", (taskId) =>{
         let taskIndex = tasks.findIndex(task => task.id === parseInt(taskId));
         if(taskIndex !== -1) {
-            new Promise((resolve, reject) =>{
+            new Promise((resolve) =>{
             setTimeout(() => {
                 resolve(tasks.splice(taskIndex, 1));
             }, 2000);
@@ -149,7 +149,7 @@ function completeTask() {
         let task = tasks.find(task => task.id === parseInt(taskId));
 
         if(task) {
-            new Promise((resolve, reject) =>{
+            new Promise((resolve) =>{
                 setTimeout(() => {
                     resolve(task.completed = true);
                 }, 2000);
