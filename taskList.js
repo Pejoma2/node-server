@@ -118,16 +118,25 @@ async function addTask() {
 //-2- Remove task function
 
 function removeTask() {
-    communicator.question("Enter the ID of the task upu want to REMOVE: ", (taskId) =>{
+    communicator.question("Enter the ID of the task you want to REMOVE: ", (taskId) =>{
         let taskIndex = tasks.findIndex(task => task.id === parseInt(taskId));
         if(taskIndex !== -1) {
-            tasks.splice(taskIndex, 1);
-            console.log("Task Removed.");
-        }else{
+            new Promise((resolve, reject) =>{
+            setTimeout(() => {
+                resolve(tasks.splice(taskIndex, 1));
+            }, 2000);
+            })
+            .then(() => {
+                console.log("Task Removed.");
+                showMenu();
+              })
+        }
+        else{
             console.log("Can´t find the ID")
+            showMenu();
         }
 
-        showMenu();
+        
     }
 )};
 
@@ -140,8 +149,13 @@ function completeTask() {
         let task = tasks.find(task => task.id === parseInt(taskId));
 
         if(task) {
-            task.completed = true;
-            console.log("Task Completed");
+            new Promise((resolve, reject) =>{
+                setTimeout(() => {
+                    resolve(task.completed = true);
+                }, 2000);
+            })
+            
+            .then(console.log("Task Completed"));
         } else {
             console.log("Can´t find the ID");
         }
