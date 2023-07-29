@@ -1,5 +1,5 @@
 //const add = require("./addTask");
-
+const http = require("http");
 
 const readline = require("readline");
 
@@ -66,7 +66,16 @@ function showMenu(){
 
 
 let taskId = 1;
-let tasks = [];
+let tasks = [
+    // {
+    //     id: 0,
+    //     name: "nombre",
+    //     dueDate: "15-07-23",
+    //     description: "description",
+    //     completed: false,
+
+    // }
+];
 
 
 //-0- function AskQuestion
@@ -185,5 +194,26 @@ function RemoveALLTask(){
 
 
 
+const port = 8000;
+const requestListener = (req, res) => {
+    const url = new URL(req.url, `http://localhost:${port}/`);
 
-const 
+    if(url.pathname === '/'){
+        res.write("<p>SERVIDOR</p>");
+    }
+
+    if(url.pathname === '/task') {
+        const responseJson = JSON.stringify(tasks);
+        res.writeHead(200);
+        res.write(responseJson);
+        
+    }
+
+    res.end();
+}
+
+const server = http.createServer(requestListener);
+
+server.listen(port, () => {
+    console.log(`Servidor en ejecución en http://localhost:${port}`);
+});
